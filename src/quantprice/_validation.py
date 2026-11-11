@@ -80,3 +80,14 @@ def validate_market_inputs(
     except ValueError as exc:
         raise ValueError(f"input shapes cannot be broadcast together: {exc}") from exc
     return S_, K_, T_, r_, sig, q_
+
+
+def validate_times(times: ArrayLike) -> FloatArray:
+    """Monitoring dates in years (ACT/365): a non-empty, finite, strictly increasing
+    1-D sequence with every date > 0."""
+    t = np.atleast_1d(np.asarray(times, dtype=np.float64))
+    if t.ndim != 1 or t.size == 0:
+        raise ValueError("times must be a non-empty 1-D sequence of monitoring dates")
+    if not np.all(np.isfinite(t)) or t[0] <= 0 or np.any(np.diff(t) <= 0):
+        raise ValueError("times must be finite, > 0 and strictly increasing")
+    return t

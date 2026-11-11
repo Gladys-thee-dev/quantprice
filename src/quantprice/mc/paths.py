@@ -28,7 +28,7 @@ standard errors, never against stored random outputs.
 import numpy as np
 from numpy.typing import ArrayLike
 
-from quantprice._validation import FloatArray, validate_market_inputs
+from quantprice._validation import FloatArray, validate_market_inputs, validate_times
 
 __all__ = ["SeedLike", "make_rng", "simulate_gbm"]
 
@@ -52,15 +52,6 @@ def _validate_n_paths(n_paths: int, antithetic: bool) -> int:
     if antithetic and n_paths % 2:
         raise ValueError(f"n_paths must be even with antithetic variates; got {n_paths}")
     return int(n_paths)
-
-
-def _validate_times(times: ArrayLike) -> FloatArray:
-    t = np.atleast_1d(np.asarray(times, dtype=np.float64))
-    if t.ndim != 1 or t.size == 0:
-        raise ValueError("times must be a non-empty 1-D sequence of monitoring dates")
-    if not np.all(np.isfinite(t)) or t[0] <= 0 or np.any(np.diff(t) <= 0):
-        raise ValueError("times must be finite, > 0 and strictly increasing")
-    return t
 
 
 def simulate_gbm(
@@ -90,7 +81,7 @@ def simulate_gbm(
         included).
     """
     S_, _, _, r_, sig, q_ = (float(a) for a in validate_market_inputs(S, 1.0, 0.0, r, sigma, q))
-    t = _validate_times(times)
+    t = validate_times(times)
     n = _validate_n_paths(n_paths, antithetic)
     rng = make_rng(seed)
 
