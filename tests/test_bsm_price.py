@@ -2,6 +2,7 @@
 
 import itertools
 import math
+from typing import Any
 
 import numpy as np
 import pytest
@@ -189,7 +190,7 @@ def test_mixed_zero_and_positive_vol_in_one_array() -> None:
     ],
 )
 def test_invalid_inputs_raise_value_error(kwargs: dict[str, object], message: str) -> None:
-    args: dict[str, object] = {"S": 100.0, "K": 100.0, "T": 1.0, "r": 0.05, "sigma": 0.2, "q": 0.0}
+    args: dict[str, Any] = {"S": 100.0, "K": 100.0, "T": 1.0, "r": 0.05, "sigma": 0.2, "q": 0.0}
     args.update(kwargs)
     with pytest.raises(ValueError, match=message):
         price("call", **args)
