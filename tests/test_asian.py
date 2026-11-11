@@ -5,6 +5,7 @@ from typing import Any
 
 import numpy as np
 import pytest
+from numpy.typing import ArrayLike
 from scipy.special import ndtr
 
 from quantprice import asian, bsm
@@ -89,7 +90,7 @@ def test_zero_volatility_is_deterministic_average() -> None:
 
 # ------------------------------------------------------- geometric MC validates the engine
 
-DATE_SETS = {
+DATE_SETS: dict[str, tuple[ArrayLike, float | None]] = {
     "monthly": (MONTHLY, None),
     "uneven dates, late payment": ([0.1, 0.15, 0.6, 0.61, 0.9], 1.5),
     "two dates": ([0.5, 1.0], None),
