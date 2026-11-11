@@ -1,0 +1,88 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "quantprice"
+dynamic = ["version"]
+description = "Options pricing library with verified ground-truth problem sets for evaluating LLM mathematical reasoning."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Gladys-thee-dev" }]
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "hypothesis>=6.100",
+    "mpmath>=1.3",      # independent high-precision reference used only in tests
+    "ruff>=0.6",
+    "mypy>=1.10",
+]
+quantlib = [
+    "QuantLib>=1.31",
+]
+
+[project.urls]
+Repository = "https://github.com/Gladys-thee-dev/quantprice"
+
+[tool.hatch.version]
+path = "src/quantprice/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/quantprice"]
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes
+    "I",        # isort
+    "B",        # bugbear
+    "UP",       # pyupgrade
+    "N",        # pep8-naming
+    "NPY",      # numpy-specific
+    "SIM",      # simplify
+    "RUF",      # ruff-specific
+]
+# Single-letter math names (S, K, T) are conventional in finance formulas.
+ignore = ["N803", "N806"]
+
+# ---------------------------------------------------------------- mypy
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["mpmath.*", "QuantLib.*", "scipy.*"]
+ignore_missing_imports = true
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+markers = [
+    "quantlib: cross-validation against QuantLib (needs `pip install quantprice[quantlib]`)",
+    "slow: long-running convergence or Monte Carlo tests",
+]
+# Numerical code: overflow / invalid-value warnings must fail tests, not scroll by.
+filterwarnings = ["error"]
