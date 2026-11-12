@@ -70,7 +70,7 @@ def test_problem_text_states_conventions_and_tolerance(problems: list[Problem]) 
         assert CONVENTIONS_TEXT in p.conventions
         assert f"Conventions: {p.conventions}" in p.problem
         assert f"within {p.tolerance.abs:.3g}" in p.problem
-        assert f"{p.inputs['T_days']} calendar days" in p.problem
+        assert f"{p.inputs['T_days']}/365" in p.problem
 
 
 def test_answers_are_not_degenerate(problems: list[Problem]) -> None:

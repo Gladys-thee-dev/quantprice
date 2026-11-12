@@ -10,7 +10,15 @@ import random
 from collections.abc import Callable, Iterable
 
 from quantprice._version import __version__
-from quantprice.benchmarks.generators import bs_price, greeks, parity
+from quantprice.benchmarks.generators import (
+    asian,
+    barrier,
+    binomial,
+    bs_price,
+    greeks,
+    implied_vol,
+    parity,
+)
 from quantprice.benchmarks.generators._common import MIN_ANSWER_IN_TOLS, Draft
 from quantprice.benchmarks.schema import Difficulty, Problem, Tolerance
 
@@ -24,6 +32,10 @@ TOPICS: dict[str, Generator] = {
     "bs_price": bs_price.make,
     **{f"greek_{name}": greeks.make_greek(name) for name in greeks.GREEKS},
     "put_call_parity": parity.make,
+    "binomial_american_put": binomial.make,
+    "implied_vol": implied_vol.make,
+    "geometric_asian": asian.make,
+    "barrier_in_out_parity": barrier.make,
 }
 
 _MAX_TRIES = 1000

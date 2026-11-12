@@ -36,6 +36,9 @@ quantlib = [
     "QuantLib>=1.31",
 ]
 
+[project.scripts]
+quantprice-bench = "quantprice.benchmarks.cli:main"
+
 [project.urls]
 Repository = "https://github.com/Gladys-thee-dev/quantprice"
 
