@@ -1,9 +1,10 @@
 """The committed benchmark dataset: loads, is fully verified, and is reproducible.
 
-Regenerating from the same seed must give the same problems. Answers are compared to
-1e-12 relative rather than bit for bit: they come from SciPy special functions, whose
-last bits may differ between SciPy versions. The text, inputs and tolerances must match
-exactly.
+Regenerating from the same seed must give the same problems. Answers and tolerance
+bands are compared to 1e-12 relative rather than bit for bit: they come from
+``math.exp`` and SciPy special functions, whose last bits differ between platforms
+(CI on Linux found a 1-ulp difference against the Windows-generated file) and between
+library versions. The text and inputs must match exactly.
 """
 
 from collections import Counter
@@ -37,7 +38,8 @@ def test_dataset_is_reproducible_from_its_seed() -> None:
     for new, old in zip(fresh, PROBLEMS, strict=True):
         assert new.problem == old.problem, old.id
         assert new.inputs == old.inputs, old.id
-        assert new.tolerance == old.tolerance, old.id
+        assert new.tolerance.basis == old.tolerance.basis, old.id
+        assert new.tolerance.abs == pytest.approx(old.tolerance.abs, rel=1e-12), old.id
         assert new.verified_answer == pytest.approx(old.verified_answer, rel=1e-12), old.id
 
 
