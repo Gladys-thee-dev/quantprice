@@ -64,7 +64,7 @@ select = [
     "RUF",      # ruff-specific
 ]
 # Single-letter math names (S, K, T) are conventional in finance formulas.
-ignore = ["N803", "N806", "N815"]
+ignore = ["N802", "N803", "N806", "N815"]
 
 # ---------------------------------------------------------------- mypy
 [tool.mypy]
